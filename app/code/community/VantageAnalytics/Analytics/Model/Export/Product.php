@@ -7,11 +7,19 @@ class VantageAnalytics_Analytics_Model_Export_Product extends VantageAnalytics_A
         parent::__construct($pageSize, $api, 'Product');
     }
 
-    protected function createCollection($website)
+    protected function createCollection($website, $pageNumber)
     {
-        return Mage::getModel('catalog/product')->getCollection()
+        $storeId = $website->getDefaultGroup()->getDefaultStoreId();
+        $collection = Mage::getModel('catalog/product')->getCollection()
             ->addWebsiteFilter($website->getId())
-            ->addAttributeToSelect('*');
+            ->setStoreId($storeId)
+            ->addAttributeToSelect('*')
+            ->addUrlRewrite()
+            ->setPageSize($this->pageSize);
+        if (!is_null($pageNumber)) {
+            $collection->setPage($pageNumber, $this->pageSize);
+        }
+        return $collection;
     }
 }
 

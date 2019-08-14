@@ -33,7 +33,9 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
             try {
                 $entity = $this->getEntity($observer->getEvent());
                 $data = $this->collectData($entity);
-                $this->api->enqueue('create', $data);
+                if (!empty($data)) {
+                    $this->api->enqueue('create', $data);
+                }
             } catch (Exception $e) {
                 Mage::helper('analytics/log')->logException($e);
             }
@@ -47,7 +49,9 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
             try {
                 $entity = $this->getEntity($observer->getEvent());
                 $data = $this->collectData($entity);
-                $this->api->enqueue('delete', $data);
+                if (!empty($data)) {
+                    $this->api->enqueue('delete', $data);
+                }
             } catch (Exception $e) {
                 Mage::helper('analytics/log')->logException($e);
             }

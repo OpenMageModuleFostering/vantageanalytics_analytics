@@ -34,6 +34,32 @@ class VantageAnalytics_Analytics_Helper_Account extends Mage_Core_Helper_Abstrac
         return dirname($this->vantageUrl()) . '/register/';
     }
 
+    public function notifyVantageUrl()
+    {
+        return dirname($this->vantageUrl()) . '/notify/';
+    }
+
+    public function accountInfoUrl()
+    {
+        return dirname($this->vantageUrl()) . '/info';
+    }
+
+    public function accountPixelUrl()
+    {
+        return $this->appUrl() . 'ecom/pixel';
+    }
+
+    public function appUrl()
+    {
+        return Mage::getStoreConfig('vantageanalytics/accountoptions/app_url', Mage::app()->getStore());
+    }
+
+    public function setAppUrl($url)
+    {
+        Mage::getConfig()->saveConfig('vantageanalytics/accountoptions/app_url', $url);
+        Mage::getConfig()->reinit();
+    }
+
     public function setVantageUrl($url)
     {
         Mage::getConfig()->saveConfig('vantageanalytics/accountoptions/vantageurl', $url);

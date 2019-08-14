@@ -1,0 +1,17 @@
+<?php
+$helper = Mage::helper("analytics/pixel");
+$url = $helper->getPixelURL();
+if (!$url) {
+    return;
+}
+?>
+<script>
+(function() {
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = '<?php echo $url ?>';
+    script.async = true;
+    head.appendChild(script);
+})(window);
+</script>

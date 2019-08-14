@@ -1,6 +1,6 @@
 <?php
 
-class VantageAnalytics_Analytics_Adminhtml_AnalyticsbackendController extends Mage_Adminhtml_Controller_Action
+class VantageAnalytics_Analytics_Adminhtml_Analytics_AnalyticsbackendController extends Mage_Adminhtml_Controller_Action
 {
     public function indexAction()
     {
@@ -29,11 +29,15 @@ class VantageAnalytics_Analytics_Adminhtml_AnalyticsbackendController extends Ma
     protected function registerAccount($params)
     {
         $registerUrl = Mage::helper("analytics/account")->registerAccountUrl();
+        Mage::helper("analytics/log")->logInfo("The account register URL is ${registerUrl}");
+
         $channel = curl_init($registerUrl);
 
         curl_setopt($channel, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($channel, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($channel, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($channel, CURLOPT_CONNECTTIMEOUT_MS, 12200);
+        curl_setopt($channel, CURLOPT_TIMEOUT_MS, 15000);
 
         $account = array(
             'username' => $params['username'],
@@ -55,13 +59,13 @@ class VantageAnalytics_Analytics_Adminhtml_AnalyticsbackendController extends Ma
 
         $status = curl_getinfo($channel, CURLINFO_HTTP_CODE);
         if ($status >= 500) {
-                Mage::throwException("An error occurred. Please try again later.");
+            Mage::throwException("An error occurred. Please try again later.");
         }
 
         if (curl_errno($channel)) {
-                $errorDesc = curl_error($channel);
-                    curl_close($channel);
-                    Mage::throwException("An error occurred. Please try again later.");
+             $errorDesc = curl_error($channel);
+             curl_close($channel);
+             Mage::throwException("An error occurred. Please try again later.");
         }
 
         curl_close($channel);
