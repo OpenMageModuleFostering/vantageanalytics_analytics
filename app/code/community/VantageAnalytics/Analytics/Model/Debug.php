@@ -8,11 +8,16 @@ class VantageAnalytics_Analytics_Model_Debug
         return new self();
     }
 
-    // Makes it simpler to accept the
-    // debug information in the inbound-api
     public function storeIds()
     {
-        return array_values(Mage::app()->getWebsite()->getStoreIds());
+        $websiteIds = array();
+        $sites = Mage::app()->getWebsites();
+
+        foreach ($sites as $website) {
+            $websiteIds[] = $website->getWebsiteId();
+        }
+
+        return $websiteIds;
     }
 
     public function entityType()
