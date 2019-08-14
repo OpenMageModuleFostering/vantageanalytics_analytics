@@ -19,9 +19,10 @@ class VantageAnalytics_Analytics_Test_Model_LineItem extends VantageAnalytics_An
     {
         $order = Mage::getModel('sales/order')->load(1);
         $items = $order->getAllItems();
+        $store = Mage::app()->getStore();
 
         $transformer =
-            VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem::factory($items[0]);
+            VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem::factory($items[0], $store);
 
         $this->assertEquals("book", $transformer->sku());
         $this->assertEquals("1", $transformer->externalParentIdentifier());

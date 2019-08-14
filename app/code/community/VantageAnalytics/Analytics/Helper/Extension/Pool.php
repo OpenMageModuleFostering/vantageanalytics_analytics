@@ -16,7 +16,7 @@ class VantageAnalytics_Analytics_Helper_Extension_Pool
     {
         $final = array();
 
-        foreach($this->_files() as $file)
+        foreach ($this->_files() as $file)
         {
             if(is_dir($file))
             {

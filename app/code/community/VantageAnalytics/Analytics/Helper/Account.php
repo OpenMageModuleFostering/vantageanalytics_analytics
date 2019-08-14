@@ -88,4 +88,8 @@ class VantageAnalytics_Analytics_Helper_Account extends Mage_Core_Helper_Abstrac
         Mage::getConfig()->reinit();
     }
 
+    public function getExtensionVersion()
+    {
+        return (string) Mage::getConfig()->getNode()->modules->VanageAnalytics_Analytics->version;
+    }
 }

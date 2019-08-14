@@ -64,7 +64,7 @@ class VantageAnalytics_Analytics_Model_Debug
 
         $sites = Mage::app()->getWebsites(true);
 
-        foreach($sites as $website) {
+        foreach ($sites as $website) {
             $websites[$website->getId()] = $website->getCode();
         }
 
@@ -80,6 +80,11 @@ class VantageAnalytics_Analytics_Model_Debug
     public function verified()
     {
         return Mage::helper('analytics/account')->isVerified();
+    }
+
+    public function extensionVersion()
+    {
+        return Mage::helper('analytics/account')->getExtensionVersion();
     }
 
     public function toVantage()
