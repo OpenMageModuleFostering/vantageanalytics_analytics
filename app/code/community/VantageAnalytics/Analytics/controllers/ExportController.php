@@ -37,6 +37,8 @@ class VantageAnalytics_Analytics_ExportController extends Mage_Core_Controller_F
             return;
         }
 
+        $websiteId = $this->getRequest()->getParam('store_id', '');
+
         $websites = Mage::app()->getWebsites();
 
         $inlineApi = new VantageAnalytics_Analytics_Model_Api_Inline();
@@ -45,7 +47,9 @@ class VantageAnalytics_Analytics_ExportController extends Mage_Core_Controller_F
         $exporter = new VantageAnalytics_Analytics_Model_Export_Store(5000, $inlineApi);
 
         foreach ($websites as $website) {
-            $exporter->exportWebsite($website);
+            if ($websiteId == '' || $websiteId == $website->getId()) {
+                $exporter->exportWebsite($website);
+            }
         }
 
         $results = $inlineApi->queue;

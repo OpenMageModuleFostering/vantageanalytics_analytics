@@ -100,6 +100,7 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
         $product['store_ids']                       = $this->storeIds();
         $product['external_identifier']             = $this->externalIdentifier();
+        $product['site_id']                         = $this->siteId();
         $product['external_parent_identifier']      = $this->externalParentIdentifier();
         $product['source_created_at']               = $this->sourceCreatedAt();
         $product['source_updated_at']               = $this->sourceUpdatedAt();

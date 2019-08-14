@@ -122,6 +122,7 @@ abstract class VantageAnalytics_Analytics_Model_Transformer_BaseSales extends Va
         $quoteData = array(
             "external_identifier" => $this->externalIdentifier(),
             "store_ids" => $this->storeIds(),
+            "site_id" => $this->siteId(),
             "source_created_at" => $this->sourceCreatedAt(),
             "source_updated_at" => $this->sourceUpdatedAt(),
             "source_name" => $this->sourceName(),

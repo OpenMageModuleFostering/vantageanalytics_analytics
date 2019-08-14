@@ -74,6 +74,7 @@ class VantageAnalytics_Analytics_Model_Transformer_Customer extends VantageAnaly
         $c['entity_type']               = $this->entityType();
         $c['external_identifier']       = $this->externalIdentifier();
         $c['store_ids']                 = $this->storeIds();
+        $c['site_id']                   = $this->siteId();
         $c['source_created_at']         = $this->sourceCreatedAt();
         $c['source_updated_at']         = $this->sourceUpdatedAt();
         $c['first_name']                = $this->firstName();

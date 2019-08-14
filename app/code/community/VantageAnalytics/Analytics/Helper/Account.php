@@ -146,4 +146,18 @@ class VantageAnalytics_Analytics_Helper_Account extends Mage_Core_Helper_Abstrac
         $mySecret = $this->secret();
         return $this->hashEquals($mySecret, $providedSecret);
     }
+
+
+    public function getSiteId()
+    {
+        $siteId = Mage::getStoreConfig('vantageanalytics/accountoptions/siteid', 0);
+
+        if (empty($siteId)) {
+            $siteId = uniqid();
+            Mage::getConfig()->saveConfig('vantageanalytics/accountoptions/siteid', $siteId);
+            Mage::getConfig()->reinit();
+        }
+
+        return $siteId;
+    }
 }

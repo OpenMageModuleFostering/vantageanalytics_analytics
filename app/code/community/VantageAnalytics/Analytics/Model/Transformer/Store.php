@@ -139,6 +139,9 @@ class VantageAnalytics_Analytics_Model_Transformer_Store extends VantageAnalytic
             get_class_methods($this),
             array('toVantage', '__construct', 'factory')
         );
+
+        $methods[] = 'siteId';
+
         $data = array();
         foreach ($methods as $method) {
             $attr = strtolower(preg_replace(
