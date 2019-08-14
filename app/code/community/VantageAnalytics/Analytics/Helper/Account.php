@@ -26,17 +26,17 @@ class VantageAnalytics_Analytics_Helper_Account extends Mage_Core_Helper_Abstrac
 
     public function vantageUrl()
     {
-        return Mage::getStoreConfig('vantageanalytics/accountoptions/vantageurl', Mage::app()->getStore());
+        return dirname(Mage::getStoreConfig('vantageanalytics/accountoptions/vantageurl', Mage::app()->getStore())) . '/webhook';
     }
 
     public function registerAccountUrl()
     {
-        return dirname($this->vantageUrl()) . '/register/';
+        return dirname($this->vantageUrl()) . '/register';
     }
 
     public function notifyVantageUrl()
     {
-        return dirname($this->vantageUrl()) . '/notify/';
+        return dirname($this->vantageUrl()) . '/notify';
     }
 
     public function accountInfoUrl()

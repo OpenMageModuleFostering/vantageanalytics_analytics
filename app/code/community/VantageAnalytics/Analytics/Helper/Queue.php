@@ -4,7 +4,7 @@ class VantageAnalytics_Analytics_Helper_Queue extends Mage_Core_Helper_Abstract
 {
     protected $queueName = "vantage";
     protected $registry = array();
-    protected $maxBatchSize = 1000;
+    protected $maxBatchSize = 50;
 
     protected function getQueue()
     {
@@ -49,20 +49,28 @@ class VantageAnalytics_Analytics_Helper_Queue extends Mage_Core_Helper_Abstract
 
     public function processQueue()
     {
-        try
-        {
+        try {
+            $maxLoops = 100;
             $queue = $this->getQueue();
-            foreach ($queue->receive($this->maxBatchSize) as $message) {
-                $this->runJob($message);
-                $queue->deleteMessage($message);
+            while (!$this->isEmpty()) {
+                foreach ($queue->receive($this->maxBatchSize) as $message) {
+                    $this->runJob($message);
+                    $queue->deleteMessage($message);
+                }
+                // Stop once in a while to let other jobs run
+                $maxLoops = $maxLoops - 1;
+                if ($maxLoops < 1) {
+                    return;
+                }
             }
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             Mage::helper('analytics/log')->logException($e);
-            return false;
         }
-        return true;
+    }
+
+    public function isEmpty($queue)
+    {
+        return ($this->getQueue()->count() == 0);
     }
 
     public function enqueue($task)
