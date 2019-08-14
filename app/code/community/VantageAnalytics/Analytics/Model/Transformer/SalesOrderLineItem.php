@@ -2,9 +2,9 @@
 
 class VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem extends VantageAnalytics_Analytics_Model_Transformer_BaseSalesItem
 {
-    public static function factory($magentoSalesOrderLineItem)
+    public static function factory($magentoSalesOrderLineItem, $magentoStore)
     {
-        return new self($magentoSalesOrderLineItem);
+        return new self($magentoSalesOrderLineItem, $magentoStore);
     }
 
     public function storeIds()

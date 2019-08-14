@@ -25,7 +25,7 @@ class VantageAnalytics_Analytics_Helper_Extension_Lister
     {
         $extensions = array();
 
-        foreach($this->pools() as $pool)
+        foreach ($this->pools() as $pool)
         {
             $extensions[] =
                 VantageAnalytics_Analytics_Helper_Extension_Pool::factory($pool)

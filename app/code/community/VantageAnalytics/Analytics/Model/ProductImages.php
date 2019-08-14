@@ -1,15 +1,16 @@
 <?php
 class VantageAnalytics_Analytics_Model_ProductImages
 {
-    public static function factory($product)
+    public static function factory($product, $store)
     {
-        return new self($product);
+        return new self($product, $store);
     }
 
-    public function __construct($product)
+    public function __construct($product, $store)
     {
         $this->product = $product;
         $this->config  = $product->getMediaConfig();
+        $this->store   = $store;
     }
 
     public function urls()

@@ -2,14 +2,14 @@
 
 class VantageAnalytics_Analytics_Model_Transformer_SalesOrder extends VantageAnalytics_Analytics_Model_Transformer_BaseSales
 {
-    public static function factory($magentoSalesEntity)
+    public static function factory($magentoSalesEntity, $magentoStore)
     {
-        return new self($magentoSalesEntity);
+        return new self($magentoSalesEntity, $magentoStore);
     }
 
-    public function __construct($magentoSalesEntity)
+    public function __construct($magentoSalesEntity, $magentoStore)
     {
-        parent::__construct($magentoSalesEntity);
+        parent::__construct($magentoSalesEntity, $magentoStore);
 
         $this->statuses = VantageAnalytics_Analytics_Helper_Statuses::factory($magentoSalesEntity);
     }
@@ -80,7 +80,7 @@ class VantageAnalytics_Analytics_Model_Transformer_SalesOrder extends VantageAna
         // Total item is only avaialable on order
         $total = 0;
 
-        foreach($this->_lines() as $item) {
+        foreach ($this->_lines() as $item) {
             $total += $item->getQtyOrdered();
         }
 
@@ -100,7 +100,7 @@ class VantageAnalytics_Analytics_Model_Transformer_SalesOrder extends VantageAna
 
     protected function buildLine($item)
     {
-        return VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem::factory($item)
+        return VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem::factory($item, $this->magentoStore)
             ->toVantage();
     }
 }

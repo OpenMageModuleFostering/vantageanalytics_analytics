@@ -3,7 +3,7 @@
 class VantageAnalytics_Analytics_Model_Transformer_Store extends VantageAnalytics_Analytics_Model_Transformer_Base
 {
 
-    public function __construct($magentoWebsite)
+    public function __construct($magentoWebsite, $magentoStore=null)
     {
         $this->website = $magentoWebsite;
         $this->entity = $magentoWebsite->getDefaultStore();

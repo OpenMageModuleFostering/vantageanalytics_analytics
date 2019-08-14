@@ -7,10 +7,10 @@ if (!$url) {
 }
 
 $orderId = Mage::getSingleton('checkout/session')->getLastOrderId();
-$order = Mage::getModel('sales/order')->load($orderId);
-$totalPrice = round($order->getGrandTotal(), 2);
+$vantageCheckout = Mage::helper("analytics/checkout")->createVantageCheckout($orderId);
 
 ?>
+
 <script>
-window.$vantageCheckout = { totalPrice: <?php echo json_encode($totalPrice) ?> };
+window.$vantageCheckout = <?php echo json_encode($vantageCheckout) ?>;
 </script>

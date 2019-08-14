@@ -34,8 +34,14 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
 
     protected function getPathToPHP()
     {
-        if (defined(PHP_BINARY) && file_exists(PHP_BINARY)) {
-            return PHP_BINARY;
+        if (defined("PHP_BINARY") && file_exists(constant("PHP_BINARY"))) {
+            return constant("PHP_BINARY");
+        }
+        if (defined("PHP_PREFIX") && file_exists(constant("PHP_PREFIX") . "/bin/php")) {
+            return constant("PHP_PREFIX") . "/bin/php";
+        }
+        if (defined("PHP_BIN_DIR") && file_exists(constant("PHP_BIN_DIR") . "/php")) {
+            return constant("PHP_BIN_DIR") . "/php";
         }
 
         // mage> echo " " . getmypid() . " " . posix_getpid() . " " . exec('echo $PPID');
@@ -77,9 +83,10 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
             new VantageAnalytics_Analytics_Model_Api_RequestQueue());
     }
 
-    protected function makeTransformer($entity)
+    protected function makeTransformer($entity, $store)
     {
-        return Mage::getModel("analytics/Transformer_{$this->transformer}", $entity);
+        $transformClass = "VantageAnalytics_Analytics_Model_Transformer_" . $this->transformer;
+        return new $transformClass($entity, $store);
     }
 
     protected function enqueue($data)
@@ -96,9 +103,9 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         }
     }
 
-    protected function exportEntity($entity)
+    protected function exportEntity($entity, $store)
     {
-        $transformer = $this->makeTransformer($entity);
+        $transformer = $this->makeTransformer($entity, $store);
         $data = $transformer->toVantage();
         $this->enqueue($data);
     }
@@ -137,7 +144,6 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         $maxChildren = 1;
 
         while ($currentPage <= $totalPages) {
-
             $this->exportMetaData(
                 $website->getWebsiteId(),
                 strtolower($entityName),
@@ -149,35 +155,17 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
             if ($endPage >= $totalPages) {
                 $endPage = $totalPages + 1; // The page ranges are inclusive-exclusive so pick up the last page
             }
-            $args = array("{$where}/ExportPage.php", $entityName, "{$websiteId}", "{$currentPage}", "{$endPage}");
-            if (function_exists('pcntl_fork')) {
-                $pid = pcntl_fork();
-                if ($pid == -1) {
-                    Mage::helper('analytics/log')->logError('Could not fork');
-                    die('could not fork');
-                } else if ($pid) {
-                    // in the parent
-                    $pids[$pid] = $pid;
 
-                    $endPage = $endPage + $numberOfPages;
-                    $currentPage = $currentPage + $numberOfPages;
-
-                } else {
-                    // in the child
-                    pcntl_exec($phpbin, $args);
-                }
-
-                if (count($pids) >= $maxChildren) {
-                    $pid = pcntl_waitpid(-1, $status);
-                    unset($pids[$pid]);
-                }
-
-            } else {
-                $this->exportPage($websiteId, $currentPage, $endPage);
-
-                $endPage = $endPage + $numberOfPages;
-                $currentPage = $currentPage + $numberOfPages;
+            $retVal = null;
+            $output = array();
+            $cmd ="${phpbin} {$where}/ExportPage.php {$entityName} {$websiteId} {$currentPage} {$endPage}";
+            exec($cmd, $output, $retVal);
+            if ($retVal !== 0) {
+                Mage::helper('analytics/log')->logError("Failure running (exit ${retVal}): {$cmd}");
             }
+
+            $endPage = $endPage + $numberOfPages;
+            $currentPage = $currentPage + $numberOfPages;
         }
     }
 
@@ -194,12 +182,15 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         $websites = Mage::app()->getWebsites();
         foreach ($websites as $website) {
             if ($websiteId == $website->getWebsiteId()) {
+                $store = $website->getDefaultGroup()->getDefaultStore();
+                Mage::app()->setCurrentStore($store->getStoreId());
+
                 $currentPage = $startPage;
                 while ($currentPage < $endPage) {
                     $collection = $this->createCollection($website, $currentPage);
 
                     foreach ($collection as $entity) {
-                        $this->exportEntity($entity);
+                        $this->exportEntity($entity, $store);
                         try {
                             $entity->clearInstance();
                         } catch (Exception $e) {

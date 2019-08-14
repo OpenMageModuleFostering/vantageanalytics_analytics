@@ -1,9 +1,9 @@
 <?php
 class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalytics_Analytics_Model_Transformer_Base
 {
-    public static function factory($magentoProduct)
+    public static function factory($magentoProduct, $magentoStore)
     {
-        return new VantageAnalytics_Analytics_Model_Transformer_Product($magentoProduct);
+        return new VantageAnalytics_Analytics_Model_Transformer_Product($magentoProduct, $magentoStore);
     }
 
     public function entityType()
@@ -13,7 +13,7 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
     public function storeIds()
     {
-        return $this->entity->getWebsiteIds();
+        return array($this->magentoStore->getWebsiteId());
     }
 
     public function externalIdentifier()
@@ -76,25 +76,15 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
     public function productUrl()
     {
-        if (Mage::app()->getStore()->isAdmin()) {
-            // Reload the product in the context of the store
-            // to get the correct url for the product
-            $websites = Mage::app()->getWebsites();
-            $storeId = $websites[1]->getDefaultStore()->getId();
-            $product = Mage::helper('catalog/product')->getProduct(
-                $this->externalIdentifier(),
-                $storeId
-            );
-
-            return empty($product) ? NULL: $product->getProductUrl();
-        }
-
-        return $this->entity->getProductUrl();
+        $url = Mage::helper('catalog/product')->getProductUrl($this->entity->getId());
+        $pos = strpos($url, '?');
+        $url = ($pos > 0) ? substr($url, 0, $pos) : $url;
+        return $url;
     }
 
     public function imageUrls()
     {
-        $images = VantageAnalytics_Analytics_Model_ProductImages::factory($this->entity);
+        $images = VantageAnalytics_Analytics_Model_ProductImages::factory($this->entity, $this->magentoStore);
         return $images->urls();
     }
 

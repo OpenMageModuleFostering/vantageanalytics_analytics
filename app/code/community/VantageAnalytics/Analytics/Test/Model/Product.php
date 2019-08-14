@@ -12,9 +12,10 @@ class VantageAnalytics_Analytics_Test_Model_Product extends VantageAnalytics_Ana
         $price = 70.50;
         $product = Mage::getModel('catalog/product')->load(1);
         $product->setPrice($price);
+        $store = Mage::app()->getStore();
 
         $transformer =
-            VantageAnalytics_Analytics_Model_Transformer_Product::factory($product);
+            VantageAnalytics_Analytics_Model_Transformer_Product::factory($product, $store);
 
         $this->assertEquals("book", $transformer->sku());
         $this->assertEquals('2012-08-17T18:00:41+00:00', $transformer->sourceCreatedAt());
@@ -29,9 +30,10 @@ class VantageAnalytics_Analytics_Test_Model_Product extends VantageAnalytics_Ana
     public function toVantageTest()
     {
         $product = Mage::getModel('catalog/product')->load(1);
+        $store = Mage::app()->getStore();
 
         $transformer =
-            VantageAnalytics_Analytics_Model_Transformer_Product::factory($product);
+            VantageAnalytics_Analytics_Model_Transformer_Product::factory($product, $store);
 
         $data = $transformer->toVantage();
         $this->assertEquals('product', $data['entity_type']);
@@ -45,8 +47,9 @@ class VantageAnalytics_Analytics_Test_Model_Product extends VantageAnalytics_Ana
     public function parentProduct()
     {
         $product = Mage::getModel('catalog/product')->load(410955);
+        $store = Mage::app()->getStore();
 
-        $parentId = VantageAnalytics_Analytics_Model_ParentProduct::factory($product)->id();
+        $parentId = VantageAnalytics_Analytics_Model_ParentProduct::factory($product, $store)->id();
 
         $this->assertEquals(336835, $parentId);
     }
