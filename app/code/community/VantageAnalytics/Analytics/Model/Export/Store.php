@@ -14,7 +14,9 @@ class VantageAnalytics_Analytics_Model_Export_Store extends VantageAnalytics_Ana
 
     public function exportWebsite($website)
     {
-        $this->exportEntity($website);
+        $store = $website->getDefaultGroup()->getDefaultStore();
+        Mage::app()->setCurrentStore($store->getStoreId());
+        $this->exportEntity($website, $store);
     }
 }
 

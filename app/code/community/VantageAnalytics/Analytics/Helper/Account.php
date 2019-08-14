@@ -29,11 +29,6 @@ class VantageAnalytics_Analytics_Helper_Account extends Mage_Core_Helper_Abstrac
         return dirname(Mage::getStoreConfig('vantageanalytics/accountoptions/vantageurl', Mage::app()->getStore())) . '/webhook';
     }
 
-    public function registerAccountUrl()
-    {
-        return dirname($this->vantageUrl()) . '/register';
-    }
-
     public function verifyAccountUrl()
     {
         return dirname($this->vantageUrl()) . '/verify';
@@ -93,12 +88,23 @@ class VantageAnalytics_Analytics_Helper_Account extends Mage_Core_Helper_Abstrac
         Mage::getConfig()->reinit();
     }
 
+    public function isCronEnabled()
+    {
+        return Mage::getStoreConfig('vantageanalytics/export/cron', Mage::app()->getStore());
+    }
+
+    public function setCronEnabled($enabled)
+    {
+        Mage::getConfig()->saveConfig('vantageanalytics/export/cron', $enabled);
+        Mage::getConfig()->reinit();
+    }
+
     public function getExtensionVersion()
     {
         return (string) Mage::getConfig()->getNode()->modules->VantageAnalytics_Analytics->version;
     }
 
-    protected function collectStoreInfo()
+    public function collectStoreInfo()
     {
         $stores = array();
 
@@ -113,50 +119,31 @@ class VantageAnalytics_Analytics_Helper_Account extends Mage_Core_Helper_Abstrac
         return $stores;
     }
 
-    public function registerAccount($params)
+    public function hashEquals($safe, $user) {
+        $safeLen = strlen($safe);
+        $userLen = strlen($user);
+
+        if ($safeLen == 0) {
+            return false;
+        }
+
+        if ($userLen != $safeLen) {
+            return false;
+        }
+
+        $result = 0;
+
+        for ($i = 0; $i < $userLen; $i++) {
+            $result |= (ord($safe[$i]) ^ ord($user[$i]));
+        }
+
+        // They are only identical strings if $result is exactly 0...
+        return $result === 0;
+    }
+
+    public function verifySecret($providedSecret)
     {
-        $verifyUrl = Mage::helper("analytics/account")->verifyAccountUrl();
-        Mage::helper("analytics/log")->logInfo("The account verify URL is ${verifyUrl}");
-
-        $channel = curl_init($verifyUrl);
-
-        curl_setopt($channel, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($channel, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($channel, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($channel, CURLOPT_CONNECTTIMEOUT_MS, 12200);
-        curl_setopt($channel, CURLOPT_TIMEOUT_MS, 15000);
-
-        $account = array(
-            'username' => $params['username'],
-            'secret' => $params['secret'],
-            'stores' => $this->collectStoreInfo()
-        );
-
-        $body = json_encode($account);
-        curl_setopt($channel, CURLOPT_POSTFIELDS, $body);
-        $headers = array(
-                'Content-type: application/json',
-                'Content-length: ' . strlen($body)
-            );
-
-
-        curl_setopt($channel, CURLOPT_HTTPHEADER, $headers);
-        $result = curl_exec($channel);
-
-        $status = curl_getinfo($channel, CURLINFO_HTTP_CODE);
-        if ($status >= 500) {
-            Mage::throwException("An error occurred. Please try again later.");
-        }
-
-        if (curl_errno($channel)) {
-             $errorDesc = curl_error($channel);
-             curl_close($channel);
-             Mage::throwException("An error occurred. Please try again later.");
-        }
-
-        curl_close($channel);
-        $response = json_decode($result, true);
-
-        return $response;
+        $mySecret = $this->secret();
+        return $this->hashEquals($mySecret, $providedSecret);
     }
 }

@@ -2,9 +2,10 @@
 <config>
   <modules>
     <VantageAnalytics_Analytics>
-      <version>1.1.2</version>
+      <version>1.1.5</version>
     </VantageAnalytics_Analytics>
   </modules>
+
   <phpunit>
      <suite>
        <modules>
@@ -126,6 +127,15 @@
   </global>
 
   <frontend>
+    <routers>
+      <analytics>
+        <use>standard</use>
+        <args>
+          <module>VantageAnalytics_Analytics</module>
+          <frontName>analytics</frontName>
+        </args>
+      </analytics>
+    </routers>
     <events>
       <sales_order_place_after>
         <observers>
@@ -186,6 +196,7 @@
       </accountoptions>
       <export>
         <done>0</done>
+        <cron>0</cron>
       </export>
     </vantageanalytics>
   </default>

@@ -103,14 +103,14 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         }
     }
 
-    protected function exportEntity($entity, $store)
+    public function exportEntity($entity, $store)
     {
         $transformer = $this->makeTransformer($entity, $store);
         $data = $transformer->toVantage();
         $this->enqueue($data);
     }
 
-    protected function exportMetaData($websiteId, $entity, $currentPage, $totalPages, $pageSize)
+    protected function _exportMetaData($websiteId, $entity, $currentPage, $totalPages, $pageSize, $totalItems)
     {
         $this->api->enqueue(
             'progress',
@@ -119,7 +119,8 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
                 'entity_type' => $entity,
                 'current_page' => $currentPage,
                 'total_pages' => $totalPages,
-                'page_size' => $pageSize
+                'page_size' => $pageSize,
+                'total_items' => $totalItems
             ),
             true
         );
@@ -134,6 +135,7 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
             return;
         }
         $totalPages = $collection->getLastPageNumber();
+        $totalItems = $collection->getSize();
         $entityName = $this->getEntityName();
         $currentPage = 0;
         $endPage = $currentPage + $numberOfPages;
@@ -144,12 +146,13 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         $maxChildren = 1;
 
         while ($currentPage <= $totalPages) {
-            $this->exportMetaData(
+            $this->_exportMetaData(
                 $website->getWebsiteId(),
                 strtolower($entityName),
                 $currentPage,
                 $totalPages,
-                $this->pageSize
+                $this->pageSize,
+                $totalItems
             );
 
             if ($endPage >= $totalPages) {
@@ -177,6 +180,31 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         }
     }
 
+    public function exportMetaData($websiteId)
+    {
+        $websites = Mage::app()->getWebsites();
+        foreach ($websites as $website) {
+            if ($websiteId == $website->getWebsiteId()) {
+                $store = $website->getDefaultGroup()->getDefaultStore();
+                Mage::app()->setCurrentStore($store->getStoreId());
+
+                $collection = $this->createCollection($website, 1);
+                $totalPages = $collection->getLastPageNumber();
+                $totalItems = $collection->getSize();
+                $entityName = $this->getEntityName();
+
+                $this->_exportMetaData(
+                    $website->getWebsiteId(),
+                    strtolower($entityName),
+                    $currentPage,
+                    $totalPages,
+                    $this->pageSize,
+                    $totalItems
+                );
+            }
+        }
+    }
+
     public function exportPage($websiteId, $startPage, $endPage)
     {
         $websites = Mage::app()->getWebsites();
@@ -188,6 +216,18 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
                 $currentPage = $startPage;
                 while ($currentPage < $endPage) {
                     $collection = $this->createCollection($website, $currentPage);
+                    $totalPages = $collection->getLastPageNumber();
+                    $totalItems = $collection->getSize();
+                    $entityName = $this->getEntityName();
+
+                    $this->_exportMetaData(
+                        $website->getWebsiteId(),
+                        strtolower($entityName),
+                        $currentPage,
+                        $totalPages,
+                        $this->pageSize,
+                        $totalItems
+                    );
 
                     foreach ($collection as $entity) {
                         $this->exportEntity($entity, $store);
@@ -212,7 +252,6 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
 
     protected function processQueue()
     {
-        $queue = Mage::helper('analytics/queue');
-        $queue->processQueue();
+        $this->api->processQueue();
     }
 }

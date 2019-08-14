@@ -21,4 +21,16 @@ class VantageAnalytics_Analytics_Model_Api_RequestQueue
             'args' => array($entityMethod, $entity)
         ));
     }
+
+    public function processQueue()
+    {
+        $queue = Mage::helper('analytics/queue');
+        return $queue->processQueue();
+    }
+
+    public function isEmpty()
+    {
+        $queue = Mage::helper('analytics/queue');
+        return $queue->isEmpty();
+    }
 }

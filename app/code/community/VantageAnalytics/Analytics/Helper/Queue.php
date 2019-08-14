@@ -68,9 +68,26 @@ class VantageAnalytics_Analytics_Helper_Queue extends Mage_Core_Helper_Abstract
         }
     }
 
-    public function isEmpty($queue)
+    public function receiveMessages($batchSize)
     {
-        return ($this->getQueue()->count() == 0);
+        $queue = $this->getQueue();
+        return $queue->receive($batchSize);
+    }
+
+    public function deleteMessage($message)
+    {
+        $queue = $this->getQueue();
+        $queue->deleteMessage($message);
+    }
+
+    public function getMessageCount()
+    {
+        return $this->getQueue()->count();
+    }
+
+    public function isEmpty()
+    {
+        return $this->getMessageCount() == 0;
     }
 
     public function enqueue($task)

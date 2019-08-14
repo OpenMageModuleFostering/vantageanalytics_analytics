@@ -69,8 +69,17 @@ class VantageAnalytics_Analytics_Model_Cron
         return Mage::helper('analytics/account')->isVerified();
     }
 
+    protected function cronIsEnabled()
+    {
+        return Mage::helper('analytics/account')->isCronEnabled();
+    }
+
     public function run()
     {
+        if (!$this->cronIsEnabled()) {
+            return;
+        }
+
         if (!$this->accountIsVerified()) {
             $this->log('account verification required or failed. Not running.');
             return;
