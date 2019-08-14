@@ -1,6 +1,9 @@
 <?php
+
 class VantageAnalytics_Analytics_Model_ProductCategories
 {
+    private static $_product_cache = array();
+
     public static function factory($product)
     {
         return new self($product);
@@ -29,9 +32,14 @@ class VantageAnalytics_Analytics_Model_ProductCategories
 
     private function _getCategoryName($categoryId)
     {
+        if (array_key_exists($categoryId, self::$_product_cache)) {
+            return self::$_product_cache[$categoryId];
+        }
+
         $category = Mage::getModel('catalog/category')->load($categoryId);
 
-        return $category->getName();
+        self::$_product_cache[$categoryId] = $category->getName();
+        return self::$_product_cache[$categoryId];
     }
 
 }

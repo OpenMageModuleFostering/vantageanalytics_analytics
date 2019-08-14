@@ -54,7 +54,6 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
     public function price()
     {
-        // XXX: Final price vs. price
         return $this->entity->getPrice();
     }
 
@@ -77,14 +76,20 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
     public function productUrl()
     {
-        // Reload the product in the context of the store
-        // to get the correct url for the product
-        $product = Mage::helper('catalog/product')->getProduct(
-            $this->externalIdentifier(),
-            Mage::app()->getStore()->getId()
-        );
+        if (Mage::app()->getStore()->isAdmin()) {
+            // Reload the product in the context of the store
+            // to get the correct url for the product
+            $websites = Mage::app()->getWebsites();
+            $storeId = $websites[1]->getDefaultStore()->getId();
+            $product = Mage::helper('catalog/product')->getProduct(
+                $this->externalIdentifier(),
+                $storeId
+            );
 
-        return empty($product) ? NULL: $product->getProductUrl();
+            return empty($product) ? NULL: $product->getProductUrl();
+        }
+
+        return $this->entity->getProductUrl();
     }
 
     public function imageUrls()
@@ -117,7 +122,7 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
         $product['weight']                          = $this->weight();
         $product['requires_shipping']               = $this->shippingRequired();
         $product['quantity']                        = $this->quantity();
-        $product['entity_type']                     = $this->entityType();
+        $product['entity_type']                     = "product";
         $product['images']                          = $this->imageUrls();
         $product['categories']                      = $this->categories();
         $product['url']                             = $this->productUrl();

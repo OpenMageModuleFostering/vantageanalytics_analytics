@@ -2,8 +2,6 @@
 
 class VantageAnalytics_Analytics_Model_Export_Runner
 {
-
-
     protected function enqueue($method, $entity)
     {
         $api = new VantageAnalytics_Analytics_Model_Api_RequestQueue();
@@ -22,14 +20,15 @@ class VantageAnalytics_Analytics_Model_Export_Runner
         }
 
         $this->notifyExportStart();
-        $this->setExportDone(1); // Hope for the best
+        $this->setExportDone(1);
 
-        $entities = array('Store', 'Customer', 'Product', 'Order');
+        $entities = array('Store', 'Order', 'Customer', 'Product');
         Mage::helper('analytics/log')->logInfo("Start exporting all entities");
         foreach ($entities as $entity) {
             try {
                 Mage::helper('analytics/log')->logInfo("Exporting ". $entity);
-                $exporter = Mage::getModel('analytics/Export_' . $entity);
+                $exportClass = "VantageAnalytics_Analytics_Model_Export_" . $entity;
+                $exporter = new $exportClass;
                 $exporter->run();
             } catch (Exception $e) {
                 Mage::helper('analytics/log')->logError("Failed to export ". $entity);

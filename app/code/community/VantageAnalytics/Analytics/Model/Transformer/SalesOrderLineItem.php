@@ -32,9 +32,7 @@ class VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem extends Va
 
     private function magentoProduct()
     {
-        $id = $this->externalProductId();
-
-        return Mage::getModel('catalog/product')->load($id);
+        return $this->entity->getProduct();
     }
 
     public function productName()

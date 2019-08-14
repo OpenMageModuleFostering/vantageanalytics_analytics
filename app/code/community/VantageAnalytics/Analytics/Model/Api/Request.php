@@ -78,6 +78,7 @@ class VantageAnalytics_Analytics_Model_Api_Request
 
     protected function execCurl($method, $entity)
     {
+        $reponse = null;
         $attempts = 0;
         $success = false;
         while ($attempts < 5 && !$success) {
@@ -105,10 +106,10 @@ class VantageAnalytics_Analytics_Model_Api_Request
         return $response;
     }
 
-    protected function _send($entityMethod, $entity, $isExport=false)
+    protected function _send($entityMethod, $entity, $isExport)
     {
         $webhookFactory = VantageAnalytics_Analytics_Model_Api_Webhook::factory(
-            $entity, $entityMethod
+            $entity, $entityMethod, $isExport
         );
         $postData = $webhookFactory->getPostData();
         $this->execCurl("POST", $postData);
@@ -119,7 +120,7 @@ class VantageAnalytics_Analytics_Model_Api_Request
      */
     public function send($entityMethod, $entity)
     {
-        $this->_send($entityMethod, $entity);
+        $this->_send($entityMethod, $entity, false);
     }
 
     /*
