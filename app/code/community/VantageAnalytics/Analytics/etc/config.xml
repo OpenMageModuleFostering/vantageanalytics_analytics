@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <VantageAnalytics_Analytics>
+      <version>0.9.0</version>
+    </VantageAnalytics_Analytics>
+  </modules>
+  <phpunit>
+     <suite>
+       <modules>
+          <VantageAnalytics_Analytics />
+       </modules>
+     </suite>
+  </phpunit>
+
+  <global>
+    <resources>
+      <vantageanalytics_analytics_setup>
+        <setup>
+          <module>VantageAnalytics_Analytics</module>
+          <class>VantageAnalytics_Analytics_Model_Resource_Mysql4_Setup</class>
+        </setup>
+        <connection>
+          <use>core_setup</use>
+        </connection>
+      </vantageanalytics_analytics_setup>
+    </resources>
+
+    <helpers>
+      <analytics>
+        <class>VantageAnalytics_Analytics_Helper</class>
+      </analytics>
+    </helpers>
+    <models>
+      <analytics>
+        <class>VantageAnalytics_Analytics_Model</class>
+      </analytics>
+    </models>
+    <blocks>
+      <analytics>
+        <class>VantageAnalytics_Analytics_Block</class>
+      </analytics>
+    </blocks>
+
+    <events>
+
+
+      <sales_order_save_after>
+        <observers>
+          <vantageanalytics_analytics_sales_order_save_after>
+            <type>singleton</type>
+            <class>VantageAnalytics_Analytics_Model_Observer_SalesOrder</class>
+            <method>salesOrderSaveAfter</method>
+          </vantageanalytics_analytics_sales_order_save_after>
+        </observers>
+      </sales_order_save_after>
+
+      <sales_order_delete_after>
+        <observers>
+          <vantageanalytics_analytics_sales_order_delete_after>
+            <type>singleton</type>
+            <class>VantageAnalytics_Analytics_Model_Observer_SalesOrder</class>
+            <method>salesOrderDeleteAfter</method>
+          </vantageanalytics_analytics_sales_order_delete_after>
+        </observers>
+      </sales_order_delete_after>
+
+      <sales_quote_save_after>
+        <observers>
+          <vantageanalytics_analytics_sales_quote_save_after>
+            <type>singleton</type>
+            <class>VantageAnalytics_Analytics_Model_Observer_SalesQuote</class>
+            <method>salesQuoteSaveAfter</method>
+          </vantageanalytics_analytics_sales_quote_save_after>
+        </observers>
+      </sales_quote_save_after>
+
+      <catalog_product_save_after>
+        <observers>
+          <vantageanalytics_analytics_catalog_product_save_after>
+            <type>singleton</type>
+            <class>VantageAnalytics_Analytics_Model_Observer_CatalogProduct</class>
+            <method>catalogProductSaveAfter</method>
+          </vantageanalytics_analytics_catalog_product_save_after>
+        </observers>
+      </catalog_product_save_after>
+
+      <catalog_product_delete_after>
+        <observers>
+          <vantageanalytics_analytics_catalog_product_delete_after>
+            <type>singleton</type>
+            <class>VantageAnalytics_Analytics_Model_Observer_CatalogProduct</class>
+            <method>catalogProductDeleteAfter</method>
+          </vantageanalytics_analytics_catalog_product_delete_after>
+        </observers>
+      </catalog_product_delete_after>
+
+      <customer_save_after>
+        <observers>
+          <vantageanalytics_analytics_customer_save_after>
+            <class>VantageAnalytics_Analytics_Model_Observer_Customer</class>
+            <method>customerSaveAfter</method>
+          </vantageanalytics_analytics_customer_save_after>
+        </observers>
+      </customer_save_after>
+
+      <customer_delete_after>
+        <observers>
+          <vantageanalytics_analytics_customer_delete_after>
+            <type>singleton</type>
+            <class>VantageAnalytics_Analytics_Model_Observer_Customer</class>
+            <method>customerDeleteAfter</method>
+          </vantageanalytics_analytics_customer_delete_after>
+        </observers>
+      </customer_delete_after>
+
+      <controller_front_init_before>
+        <observers>
+          <vantageanalytics_analytics_tracking>
+             <class>VantageAnalytics_Analytics_Model_Observer_Tracking</class>
+             <method>controllerFrontInitBefore</method>
+             <type>singleton</type>
+          </vantageanalytics_analytics_tracking>
+        </observers>
+      </controller_front_init_before>
+    </events>
+  </global>
+
+  <frontend>
+    <events>
+      <sales_order_place_after>
+        <observers>
+          <vantageanalytics_analytics_sales_order_place_after>
+            <class>VantageAnalytics_Analytics_Model_Observer_SalesOrder</class>
+            <method>salesOrderPlaceAfter</method>
+          </vantageanalytics_analytics_sales_order_place_after>
+        </observers>
+      </sales_order_place_after>
+    </events>
+  </frontend>
+
+  <admin>
+    <routers>
+      <analytics>_
+        <use>admin</use>
+        <args>
+          <module>VantageAnalytics_Analytics</module>
+          <frontName>analytics</frontName>
+        </args>
+      </analytics>
+    </routers>
+  </admin>
+
+  <adminhtml>
+    <menu>
+      <analytics module="analytics">
+        <title>Vantage</title>
+        <sort_order>100</sort_order>
+        <action>analytics/adminhtml_analyticsbackend</action>
+      </analytics>
+    </menu>
+    <acl>
+      <resources>
+        <all>
+          <title>Vantage Analytics</title>
+        </all>
+        <admin>
+          <children>
+            <analytics translate="title" module="analytics">
+              <title>Vantage Analytics Index</title>
+              <sort_order>1000</sort_order>
+            </analytics>
+          </children>
+        </admin>
+      </resources>
+    </acl>
+
+    <layout>
+      <updates>
+        <analytics>
+          <file>analytics.xml</file>
+        </analytics>
+      </updates>
+    </layout>
+  </adminhtml>
+
+  <crontab>
+    <jobs>
+      <analytics>
+        <schedule>
+          <cron_expr>*/5 * * * *</cron_expr>
+        </schedule>
+        <run>
+          <model>analytics/cron::run</model>
+        </run>
+      </analytics>
+      <analytics_heartbeat>
+        <schedule>
+          <cron_expr>5 * * * *</cron_expr>
+        </schedule>
+        <run>
+          <model>analytics/heartbeat::send</model>
+        </run>
+      </analytics_heartbeat>
+    </jobs>
+  </crontab>
+
+  <default>
+    <vantageanalytics>
+      <accountoptions>
+        <vantageurl>https://satellite.vantageanalytics.com/magento/webhook</vantageurl>
+      </accountoptions>
+      <export>
+        <done>0</done>
+      </export>
+    </vantageanalytics>
+  </default>
+
+</config>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<layout version="0.2.0">
+<analytics_adminhtml_analyticsbackend_index>
+  <reference name="head">
+    <action method="addCss"><name>css/register.css</name></action>
+  </reference>
+  <reference name="content">
+    <block type="analytics/adminhtml_analyticsbackend" name="analyticsbackend" template="analytics/analyticsbackend.phtml"/>
+  </reference>
+</analytics_adminhtml_analyticsbackend_index>
+<analytics_adminhtml_analyticsbackend_register>
+  <reference name="head">
+    <action method="addCss"><name>css/register.css</name></action>
+  </reference>
+  <reference name="content">
+    <block type="analytics/adminhtml_analyticsbackend" name="analyticsbackend" template="analytics/analyticsbackend.phtml"/>
+  </reference>
+</analytics_adminhtml_analyticsbackend_register>
+</layout>

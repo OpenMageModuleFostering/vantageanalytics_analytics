@@ -1,0 +1,62 @@
+scope:
+  website: # Initialize websites
+    - website_id: 2
+      code: usa_website
+      name: USA Website
+      default_group_id: 2
+  group: # Initializes store groups
+    - group_id: 2
+      website_id: 2
+      name: USA Store Group
+      default_store_id: 2
+      root_category_id: 2 # Default Category
+  store: # Initializes store views
+    - store_id: 2
+      website_id: 2
+      group_id: 2
+      code: usa
+      name: USA Store
+      is_active: 1
+config:
+  default/catalog/price/scope: 1 # Set price scope to websit
+eav:
+  catalog_product:
+    - entity_id: 410955
+      attribute_set_id: 4
+      type_id: simple
+      sku: "Test Simple Child"
+      name: "Test Simple Child"
+      short_description: "Test Simple Child"
+      description: "Test Simple Child"
+      url_key: test-child
+      website_ids:
+        - usa_website
+      category_ids:
+        - 2 # Default Category
+      price: 30.00
+      special_price: 30.00
+      tax_class_id: 2 # Taxable Goods
+      status: 1             # Enabled
+      visibility: 4         # Visible in Catalog & Search
+      color: 4         # Configurable Super Attribute
+    - entity_id: '336835'
+      attribute_set_id: 4
+      type_id: configurable
+      sku: "test-configurable"
+      name: "Test Configurable"
+      short_description: "Test Configurable"
+      description: "Test Configurable"
+      url_key: test-configurable
+      super_attributes:
+        - color
+      configurable_children:
+        - 410955
+      website_ids:
+        - usa_website
+      category_ids:
+        - 2 # Default Category
+      price: 30.00
+      special_price: 30.00
+      tax_class_id: 2 # Taxable Goods
+      status: 1             # Enabled
+      visibility: 4         # Visible in Catalog & Search

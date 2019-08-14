@@ -1,0 +1,61 @@
+tables:
+  sales/order:
+    - entity_id: 1
+      state: ''
+    - entity_id: 2
+      state: pending
+  sales/quote:
+    - entity_id: 1
+      firstname:  David
+      lastname:  Geiger
+      street:  123 Sesame St
+      city:  New York
+      postcode: 90210
+      telephone:  911
+      country_id:  US
+      region_id:  NY
+scope:
+  website: # Initialize websites
+    - website_id: 2
+      code: usa_website
+      name: USA Website
+      default_group_id: 2
+  group: # Initializes store groups
+    - group_id: 2
+      website_id: 2
+      name: USA Store Group
+      default_store_id: 2
+      root_category_id: 2 # Default Category
+  store: # Initializes store views
+    - store_id: 2
+      website_id: 2
+      group_id: 2
+      code: usa
+      name: USA Store
+      is_active: 1
+config:
+  default/catalog/price/scope: 1 # Set price scope to website
+eav:
+  catalog_product:
+    - entity_id: 1
+      attribute_set_id: 1
+      type_id: simple
+      sku: book
+      name: Book
+      short_description: Book
+      description: Book
+      url_key: book
+      stock:
+      qty: 100.00
+      is_in_stock: 1
+      website_ids:
+        - usa_website
+      #category_ids:
+      #  - 2 # Default Category
+      price: 12.99
+      tax_class_id: 2 # Taxable Goods
+      status: 1 # Enabled
+      visibility: 4 # Visible in Catalog & Search
+      /websites: # Set different prices per website
+        usa_website:
+          special_price: 9.99

@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/VantageAnalytics_Analytics",
+    "type": "magento-module",
+    "license": "Commercial---Vantage",
+    "homepage": "",
+    "description": "Vantage is a must-have tool for Magento store managers who want to grow their business without getting totally wrapped up in numbers and analysis.  ",
+    "authors": [
+    {
+        "name": "Vantage Analytics",
+        "email": "founders@vantageanalytics.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

@@ -1,0 +1,37 @@
+<?php if ($this->isAccountVerified()): ?>
+<div class="va-register">
+  <img class="va-register-logo" src="<?php echo $this->getSkinUrl('images/vantage-for-magento.png'); ?>">
+  <p class="va-register-text">
+    <a href="https://app.vantageanalytics.com/" target="_blank">Log in</a> to access your Vantage account.
+  </p>
+</div>
+<?php else: ?>
+<form action="<?php echo $this->getUrl('analytics/adminhtml_analyticsbackend/register') ?>" id="registerform" name="registerform" method="post" enctype="multipart/form-data">
+<div class="va-register">
+  <img class="va-register-logo" src="<?php echo $this->getSkinUrl('images/vantage-for-magento.png'); ?>">
+  <p class="va-register-text">
+    You’re almost done! Just create an account.
+  </p>
+  <div class="fieldset">
+    <ul class="form-list">
+      <li class="fields">
+        <div class="field">
+          <label for="username" class="required"><?php echo Mage::helper('analytics')->__('Your email') ?></label>
+          <input name="username" id="username" title="<?php echo Mage::helper('analytics')->__('Your email') ?>" value="" class="input-text required-entry" type="text" />
+        </div>
+        <div class="field">
+          <label for="password" class="required"><?php echo Mage::helper('analytics')->__('Password') ?></label>
+          <input name="password" id="password" title="<?php echo Mage::helper('analytics')->__('Password') ?>" value="" class="input-text required-entry" type="password" />
+        </div>
+        <div class="field">
+          <label for="password_confirmation" class="required"><?php echo Mage::helper('analytics')->__('Confirm Password') ?></label>
+          <input name="password_confirmation" id="password_confirmation" title="<?php echo Mage::helper('analytics')->__('Confirm Password') ?>" value="" class="input-text required-entry" type="password" />
+        </div>
+          <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+          <button class="button btn-search" type="submit" title="<?php echo Mage::helper('analytics')->__('Get Vantage Now') ?>" >Get Vantage Now</button>
+      </li>
+    </ul>
+  </div>
+</div>
+</form>
+<?php endif; ?>
