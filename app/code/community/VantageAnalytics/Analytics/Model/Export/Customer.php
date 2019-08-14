@@ -7,15 +7,11 @@ class VantageAnalytics_Analytics_Model_Export_Customer extends VantageAnalytics_
         parent::__construct($pageSize, $api, 'Customer');
     }
 
-    protected function createCollection($website, $pageNumber)
+    protected function createCollection($website)
     {
-        $collection = Mage::getModel('customer/customer')->getCollection()
+        return Mage::getModel('customer/customer')->getCollection()
             ->addAttributeToSelect('*')
             ->addFieldToFilter('website_id', $website->getId())
-            ->setPageSize($this->pageSize);
-        if (!is_null($pageNumber)) {
-            $collection->setPage($pageNumber, $this->pageSize);
-        }
-        return $collection;
+            ->setPageSize(self::PAGE_SIZE);
     }
 }

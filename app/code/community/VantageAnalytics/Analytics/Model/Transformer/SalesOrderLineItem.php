@@ -2,9 +2,9 @@
 
 class VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem extends VantageAnalytics_Analytics_Model_Transformer_BaseSalesItem
 {
-    public static function factory($magentoSalesOrderLineItem, $magentoStore)
+    public static function factory($magentoSalesOrderLineItem)
     {
-        return new self($magentoSalesOrderLineItem, $magentoStore);
+        return new self($magentoSalesOrderLineItem);
     }
 
     public function storeIds()
@@ -32,7 +32,9 @@ class VantageAnalytics_Analytics_Model_Transformer_SalesOrderLineItem extends Va
 
     private function magentoProduct()
     {
-        return $this->entity->getProduct();
+        $id = $this->externalProductId();
+
+        return Mage::getModel('catalog/product')->load($id);
     }
 
     public function productName()

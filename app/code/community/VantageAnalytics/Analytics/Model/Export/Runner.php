@@ -2,10 +2,12 @@
 
 class VantageAnalytics_Analytics_Model_Export_Runner
 {
-    protected function enqueue($method, $entity)
+
+
+    protected function enqueue($method, $resource)
     {
         $api = new VantageAnalytics_Analytics_Model_Api_RequestQueue();
-        $api->enqueue($method, $entity, true);
+        $api->enqueue($method, $resource);
     }
 
     public function run()
@@ -14,21 +16,15 @@ class VantageAnalytics_Analytics_Model_Export_Runner
             return;
         }
 
-        if (!gc_enabled()) {
-            Mage::helper('analytics/log')->logError("GC was not enabled. I am enabling it manually.");
-            gc_enable();
-        }
-
         $this->notifyExportStart();
-        $this->setExportDone(1);
+        $this->setExportDone(); // Hope for the best
 
-        $entities = array('Store', 'Order', 'Customer', 'Product');
+        $entities = array('Store', 'Customer', 'Product', 'Order');
         Mage::helper('analytics/log')->logInfo("Start exporting all entities");
         foreach ($entities as $entity) {
             try {
                 Mage::helper('analytics/log')->logInfo("Exporting ". $entity);
-                $exportClass = "VantageAnalytics_Analytics_Model_Export_" . $entity;
-                $exporter = new $exportClass;
+                $exporter = Mage::getModel('analytics/Export_' . $entity);
                 $exporter->run();
             } catch (Exception $e) {
                 Mage::helper('analytics/log')->logError("Failed to export ". $entity);
@@ -45,7 +41,7 @@ class VantageAnalytics_Analytics_Model_Export_Runner
         return Mage::helper('analytics/account')->isExportDone();
     }
 
-    public function setExportDone($done)
+    public function setExportDone($done=1)
     {
         return Mage::helper('analytics/account')->setExportDone($done);
     }

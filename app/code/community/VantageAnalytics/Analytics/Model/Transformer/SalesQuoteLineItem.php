@@ -2,9 +2,9 @@
 
 class VantageAnalytics_Analytics_Model_Transformer_SalesQuoteLineItem extends VantageAnalytics_Analytics_Model_Transformer_BaseSalesItem
 {
-    public static function factory($magentoSalesQuoteLineItem, $magentoStore)
+    public static function factory($magentoSalesQuoteLineItem)
     {
-        return new self($magentoSalesQuoteLineItem, $magentoStore);
+        return new self($magentoSalesQuoteLineItem);
     }
 
     public function externalParentIdentifier()

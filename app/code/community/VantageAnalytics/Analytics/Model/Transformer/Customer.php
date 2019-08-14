@@ -3,9 +3,9 @@
 class VantageAnalytics_Analytics_Model_Transformer_Customer extends VantageAnalytics_Analytics_Model_Transformer_Base
 {
 
-    public static function factory($magentoCustomer, $magentoStore)
+    public static function factory($magentoCustomer)
     {
-        return new self($magentoCustomer, $magentoStore);
+        return new self($magentoCustomer);
     }
 
     public function storeIds()

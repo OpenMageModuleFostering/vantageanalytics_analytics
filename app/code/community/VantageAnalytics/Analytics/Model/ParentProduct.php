@@ -33,7 +33,7 @@ class VantageAnalytics_Analytics_Model_ParentProduct
         // An example of a grouped product "Buy a phone and a car charger"
         $parents = $this->_parents();
 
-        foreach ($parents as $parent)
+        foreach($parents as $parent)
         {
             if ($this->_configurableProduct($parent))
             {
@@ -50,7 +50,7 @@ class VantageAnalytics_Analytics_Model_ParentProduct
 
         $parentIds = $this->_parentIds();
 
-        foreach ($parentIds as $parentId) {
+        foreach($parentIds as $parentId) {
             $parents[] = Mage::getModel('catalog/product')->load($parentId);
         }
 

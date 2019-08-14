@@ -7,11 +7,10 @@ abstract class VantageAnalytics_Analytics_Model_Transformer_Base
      * 'updated_at' is already in UTC, and does not
      * require conversion. Neither are formatted correctly.
      */
-    public function __construct($magentoEntity, $magentoStore)
+    public function __construct($magentoEntity)
     {
         $this->entity = $magentoEntity;
         $this->data = $this->entity->getData();
-        $this->magentoStore = $magentoStore;
     }
 
     public function sourceCreatedAt()

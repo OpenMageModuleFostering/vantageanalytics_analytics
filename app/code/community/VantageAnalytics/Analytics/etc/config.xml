@@ -137,24 +137,17 @@
         </observers>
       </sales_order_place_after>
     </events>
-    <layout>
-      <updates>
-        <vantageanalytics_analytics>
-          <file>vantageanalytics_analytics.xml</file>
-        </vantageanalytics_analytics>
-      </updates>
-    </layout>
   </frontend>
 
   <admin>
     <routers>
-      <adminhtml>
+      <analytics>_
+        <use>admin</use>
         <args>
-          <modules>
-            <analytics before="Mage_Adminhtml">VantageAnalytics_Analytics_Adminhtml</analytics>
-          </modules>
+          <module>VantageAnalytics_Analytics</module>
+          <frontName>analytics</frontName>
         </args>
-      </adminhtml>
+      </analytics>
     </routers>
   </admin>
 
@@ -163,7 +156,7 @@
       <analytics module="analytics">
         <title>Vantage</title>
         <sort_order>100</sort_order>
-        <action>adminhtml/analytics_analyticsbackend</action>
+        <action>analytics/adminhtml_analyticsbackend</action>
       </analytics>
     </menu>
     <acl>
@@ -216,7 +209,6 @@
     <vantageanalytics>
       <accountoptions>
         <vantageurl>https://satellite.vantageanalytics.com/magento/webhook</vantageurl>
-        <app_url>https://app.vantageanalytics.com/</app_url>
       </accountoptions>
       <export>
         <done>0</done>

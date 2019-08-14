@@ -8,8 +8,7 @@ class VantageAnalytics_Analytics_Test_Model_Order extends VantageAnalytics_Analy
         if ($state) {
             $order->setState($state);
         }
-        $store = Mage::app()->getStore(1);
-        $transform = VantageAnalytics_Analytics_Model_Transformer_SalesOrder::factory($order, $store);
+        $transform = VantageAnalytics_Analytics_Model_Transformer_SalesOrder::factory($order);
         return $transform->toVantage();
     }
 

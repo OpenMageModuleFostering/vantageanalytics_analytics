@@ -2,9 +2,9 @@
 
 class VantageAnalytics_Analytics_Model_Transformer_SalesQuote extends VantageAnalytics_Analytics_Model_Transformer_BaseSales
 {
-    public static function factory($magentoSalesEntity, $magentoStore)
+    public static function factory($magentoSalesEntity)
     {
-        return new self($magentoSalesEntity, $magentoStore);
+        return new self($magentoSalesEntity);
     }
 
     public function entityType()

@@ -1,8 +1,0 @@
-<?php
-
-$productId = Mage::registry('current_product')->getId();
-
-?>
-<script>
-window.$vantageProduct = { 'productId': <?php echo json_encode($productId) ?> };
-</script>

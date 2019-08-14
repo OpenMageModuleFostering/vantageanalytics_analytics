@@ -14,7 +14,7 @@ class VantageAnalytics_Analytics_Model_Cron
 
     protected function jitter()
     {
-        $seconds = rand(0, 5);
+        $seconds = rand(0, 30);
         $this->log("Sleeping for {$seconds} seconds");
         sleep($seconds);
     }
@@ -58,12 +58,6 @@ class VantageAnalytics_Analytics_Model_Cron
         $export->run();
     }
 
-    public function pollPixelUrls()
-    {
-        $pixel = Mage::getModel('analytics/Pixel');
-        $pixel->run();
-    }
-
     protected function accountIsVerified()
     {
         return Mage::helper('analytics/account')->isVerified();
@@ -72,13 +66,8 @@ class VantageAnalytics_Analytics_Model_Cron
     public function run()
     {
         if (!$this->accountIsVerified()) {
-            $this->log('account verification required or failed. Not running.');
             return;
         }
-
-        set_time_limit(0);
-        proc_nice(19); // lower priority - try not to hog CPU
-
         $this->jitter();
 
         if (!$this->acquireCronLock()) {
@@ -86,9 +75,12 @@ class VantageAnalytics_Analytics_Model_Cron
             return;
         }
 
-        $this->pollPixelUrls();
-
         $this->runHistoricalExport();
+
+        if (!$this->accountIsVerified()) {
+            $this->log('account verification required or failed. Not running.');
+            return;
+        }
 
         $this->log('processing the queue');
         $queue = Mage::helper('analytics/queue');

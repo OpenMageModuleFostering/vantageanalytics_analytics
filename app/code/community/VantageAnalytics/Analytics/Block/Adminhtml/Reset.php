@@ -4,7 +4,7 @@ class VantageAnalytics_Analytics_Block_Adminhtml_Reset extends Mage_Adminhtml_Bl
 {
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
-        $resetUrl = $this->getUrl('adminhtml/analytics_reset/reset');
+        $resetUrl = $this->getUrl('analytics/adminhtml_reset/reset');
         $this->setElement($element);
         return $this->getLayout()
             ->createBlock('adminhtml/widget_button')

@@ -7,7 +7,7 @@ class VantageAnalytics_Analytics_Model_Export_Store extends VantageAnalytics_Ana
         parent::__construct($pageSize, $api, 'Store');
     }
 
-    protected function createCollection($website, $pageNumber)
+    protected function createCollection($website)
     {
         // stub out abstract function from base class
     }

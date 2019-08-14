@@ -2,9 +2,9 @@
 
 abstract class VantageAnalytics_Analytics_Model_Transformer_BaseSales extends VantageAnalytics_Analytics_Model_Transformer_Base
 {
-    public function __construct($magentoSalesEntity, $magentoStore)
+    public function __construct($magentoSalesEntity)
     {
-        parent::__construct($magentoSalesEntity, $magentoStore);
+        parent::__construct($magentoSalesEntity);
 
         $this->billingAddress = VantageAnalytics_Analytics_Model_Transformer_Address::factory(
             $this->entity->getBillingAddress(), 'billing');

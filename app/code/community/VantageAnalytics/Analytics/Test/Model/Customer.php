@@ -10,10 +10,9 @@ class VantageAnalytics_Analytics_Test_Model_Customer extends VantageAnalytics_An
     public function simpleCustomer()
     {
         $customer = Mage::getModel('customer/customer')->load(1);
-        $store = Mage::app()->getStore();
 
         $transformer =
-            VantageAnalytics_Analytics_Model_Transformer_Customer::factory($customer, $store);
+            VantageAnalytics_Analytics_Model_Transformer_Customer::factory($customer);
 
         $this->assertEquals("example@example.com", $transformer->email());
         $this->assertEquals("john", $transformer->firstName());
@@ -29,10 +28,9 @@ class VantageAnalytics_Analytics_Test_Model_Customer extends VantageAnalytics_An
     public function vantageCustomerTest()
     {
         $customer = Mage::getModel('customer/customer')->load(1);
-        $store = Mage::app()->getStore();
 
         $transformer =
-            VantageAnalytics_Analytics_Model_Transformer_Customer::factory($customer, $store);
+            VantageAnalytics_Analytics_Model_Transformer_Customer::factory($customer);
 
         $data = $transformer->toVantage();
 

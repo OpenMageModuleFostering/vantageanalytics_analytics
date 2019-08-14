@@ -10,16 +10,12 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
         // abstract protected function
         abstract protected function getEntity($event);
 
-        protected function collectData($entity, $store)
+        protected function collectData($entity)
         {
             if(!Mage::helper('analytics/account')->isVerified()){
                 return array();
             }
-            if (is_null($store)) {
-                $store = Mage::app()->getStore();
-            }
-            $transformClass = "VantageAnalytics_Analytics_Model_Transformer_" . $this->transformer;
-            $transform = new $transformClass($entity, $store);
+            $transform = Mage::getModel("analytics/Transformer_{$this->transformer}", $entity);
             return $transform->toVantage();
         }
 
@@ -29,17 +25,14 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
                     Mage::getDesign()->getArea() == 'adminhtml');
         }
 
-        public function performSave($observer, $store=null)
+        public function performSave($observer)
         {
             if(!Mage::helper('analytics/account')->isVerified()){
                 return;
             }
-            if (is_null($store)) {
-                $store = Mage::app()->getStore();
-            }
             try {
                 $entity = $this->getEntity($observer->getEvent());
-                $data = $this->collectData($entity, $store);
+                $data = $this->collectData($entity);
                 if (!empty($data)) {
                     $this->api->enqueue('create', $data);
                 }
@@ -48,17 +41,14 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
             }
         }
 
-        public function performDelete($observer, $store=null)
+        public function performDelete($observer)
         {
             if(!Mage::helper('analytics/account')->isVerified()){
                 return;
             }
-            if (is_null($store)) {
-                $store = Mage::app()->getStore();
-            }
             try {
                 $entity = $this->getEntity($observer->getEvent());
-                $data = $this->collectData($entity, $store);
+                $data = $this->collectData($entity);
                 if (!empty($data)) {
                     $this->api->enqueue('delete', $data);
                 }

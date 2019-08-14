@@ -1,9 +1,9 @@
 <?php
 class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalytics_Analytics_Model_Transformer_Base
 {
-    public static function factory($magentoProduct, $magentoStore)
+    public static function factory($magentoProduct)
     {
-        return new VantageAnalytics_Analytics_Model_Transformer_Product($magentoProduct, $magentoStore);
+        return new VantageAnalytics_Analytics_Model_Transformer_Product($magentoProduct);
     }
 
     public function entityType()
@@ -13,7 +13,7 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
     public function storeIds()
     {
-        return array($this->magentoStore->getWebsiteId());
+        return $this->entity->getWebsiteIds();
     }
 
     public function externalIdentifier()
@@ -54,6 +54,7 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
     public function price()
     {
+        // XXX: Final price vs. price
         return $this->entity->getPrice();
     }
 
@@ -76,15 +77,19 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
 
     public function productUrl()
     {
-        $url = Mage::helper('catalog/product')->getProductUrl($this->entity->getId());
-        $pos = strpos($url, '?');
-        $url = ($pos > 0) ? substr($url, 0, $pos) : $url;
-        return $url;
+        // Reload the product in the context of the store
+        // to get the correct url for the product
+        $product = Mage::helper('catalog/product')->getProduct(
+            $this->externalIdentifier(),
+            Mage::app()->getStore()->getId()
+        );
+
+        return empty($product) ? NULL: $product->getProductUrl();
     }
 
     public function imageUrls()
     {
-        $images = VantageAnalytics_Analytics_Model_ProductImages::factory($this->entity, $this->magentoStore);
+        $images = VantageAnalytics_Analytics_Model_ProductImages::factory($this->entity);
         return $images->urls();
     }
 
@@ -112,7 +117,7 @@ class VantageAnalytics_Analytics_Model_Transformer_Product extends VantageAnalyt
         $product['weight']                          = $this->weight();
         $product['requires_shipping']               = $this->shippingRequired();
         $product['quantity']                        = $this->quantity();
-        $product['entity_type']                     = "product";
+        $product['entity_type']                     = $this->entityType();
         $product['images']                          = $this->imageUrls();
         $product['categories']                      = $this->categories();
         $product['url']                             = $this->productUrl();
