@@ -1,0 +1,16 @@
+<?php
+
+$helper = Mage::helper("analytics/pixel");
+$url = $helper->getPixelURL();
+if (!$url) {
+    return;
+}
+
+$orderId = Mage::getSingleton('checkout/session')->getLastOrderId();
+$order = Mage::getModel('sales/order')->load($orderId);
+$totalPrice = round($order->getGrandTotal(), 2);
+
+?>
+<script>
+window.$vantageCheckout = { totalPrice: <?php echo json_encode($totalPrice) ?> };
+</script>

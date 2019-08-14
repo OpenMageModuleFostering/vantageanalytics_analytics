@@ -1,6 +1,6 @@
 <?php
 
-class VantageAnalytics_Analytics_Adminhtml_ResetController extends Mage_Adminhtml_Controller_Action
+class VantageAnalytics_Analytics_Adminhtml_Analytics_ResetController extends Mage_Adminhtml_Controller_Action
 {
     private function resetConfig()
     {

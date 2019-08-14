@@ -4,10 +4,10 @@ class VantageAnalytics_Analytics_Model_Export_Runner
 {
 
 
-    protected function enqueue($method, $resource)
+    protected function enqueue($method, $entity)
     {
         $api = new VantageAnalytics_Analytics_Model_Api_RequestQueue();
-        $api->enqueue($method, $resource);
+        $api->enqueue($method, $entity, true);
     }
 
     public function run()

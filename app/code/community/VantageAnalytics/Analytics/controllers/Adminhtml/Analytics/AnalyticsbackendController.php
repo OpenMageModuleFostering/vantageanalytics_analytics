@@ -1,6 +1,6 @@
 <?php
 
-class VantageAnalytics_Analytics_Adminhtml_AnalyticsbackendController extends Mage_Adminhtml_Controller_Action
+class VantageAnalytics_Analytics_Adminhtml_Analytics_AnalyticsbackendController extends Mage_Adminhtml_Controller_Action
 {
     public function indexAction()
     {

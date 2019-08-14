@@ -58,6 +58,12 @@ class VantageAnalytics_Analytics_Model_Cron
         $export->run();
     }
 
+    public function pollPixelUrls()
+    {
+        $pixel = Mage::getModel('analytics/Pixel');
+        $pixel->run();
+    }
+
     protected function accountIsVerified()
     {
         return Mage::helper('analytics/account')->isVerified();
@@ -74,6 +80,8 @@ class VantageAnalytics_Analytics_Model_Cron
             $this->log('lock not acquired - cron is already running');
             return;
         }
+
+        $this->pollPixelUrls();
 
         $this->runHistoricalExport();
 
