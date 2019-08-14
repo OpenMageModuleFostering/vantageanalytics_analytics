@@ -3,11 +3,11 @@
     "type": "magento-module",
     "license": "Commercial---Vantage",
     "homepage": "",
-    "description": "Vantage is a must-have tool for Magento store managers who want to grow their business without getting totally wrapped up in numbers and analysis.  ",
+    "description": "The must-have dashboard, with over 100 metrics to monitor the pulse of your store.",
     "authors": [
     {
-        "name": "Vantage Analytics",
-        "email": "founders@vantageanalytics.com"
+        "name": "Brandon Kane",
+        "email": "brandon@vantageanalytics.com"
     }
 ],
     "suggest": {
