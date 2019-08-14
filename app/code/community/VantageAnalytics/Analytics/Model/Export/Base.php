@@ -6,10 +6,36 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
 
     abstract protected function createCollection($website, $pageNumber);
 
+    protected function tryToFindPHP($phpv)
+    {
+        if (file_exists("/usr/local/php{$phpv}/bin/php")) {
+            return "/usr/local/php{$phpv}/bin/php";
+        }
+
+        if (file_exists("/usr/local/php{$phpv}/bin/php{$phpv}")) {
+            return "/usr/local/php{$phpv}/bin/php{$phpv}";
+        }
+
+        if (file_exists("/usr/bin/php${phpv}")) {
+            return "/usr/bin/php{$phpv}";
+        }
+
+        if (file_exists("/usr/local/bin/php{$phpv}")) {
+            return "/usr/local/bin/php{$phpv}";
+        }
+
+        if (function_exists("exec")) {
+            $exe = exec("which php{$phpv}");
+            if ($exe) {
+                return $exe;
+            }
+        }
+    }
+
     protected function getPathToPHP()
     {
-        if (isset($PHP_BINARY) && file_exists($PHP_BINARY)) {
-            return $PHP_BINARY;
+        if (defined(PHP_BINARY) && file_exists(PHP_BINARY)) {
+            return PHP_BINARY;
         }
 
         // mage> echo " " . getmypid() . " " . posix_getpid() . " " . exec('echo $PPID');
@@ -22,33 +48,22 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
             $pid = exec('echo $PPID');
         }
 
-        $exe = exec("readlink -f /proc/$pid/exe");
-        if ($exe && file_exists($exe)) {
-            return $exe;
+        if (function_exists('exec')) {
+            $exe = exec("readlink -f /proc/$pid/exe");
+            if ($exe && file_exists($exe)) {
+                return $exe;
+            }
         }
 
-        if (file_exists("/usr/bin/php5")) {
-            return "/usr/bin/php5";
-        }
-
-        if (file_exists("/usr/local/bin/php5")) {
-            return "/usr/local/bin/php5";
-        }
-
-        $exe = exec("which php5");
+        $exe = $this->tryToFindPHP("56");
         if ($exe) {
             return $exe;
         }
-
-        if (file_exists("/usr/bin/php")) {
-            return "/usr/bin/php";
+        $exe = $this->tryToFindPHP("5");
+        if ($exe) {
+            return $exe;
         }
-
-        if (file_exists("/usr/local/bin/php")) {
-            return "/usr/local/bin/php";
-        }
-
-        $exe = exec("which php");
+        $exe = $this->tryToFindPHP("");
         if ($exe) {
             return $exe;
         }
@@ -122,10 +137,6 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         $maxChildren = 1;
 
         while ($currentPage <= $totalPages) {
-            if (count($pids) >= $maxChildren) {
-                $pid = pcntl_waitpid(-1, $status);
-                unset($pids[$pid]);
-            }
 
             $this->exportMetaData(
                 $website->getWebsiteId(),
@@ -139,21 +150,34 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
                 $endPage = $totalPages + 1; // The page ranges are inclusive-exclusive so pick up the last page
             }
             $args = array("{$where}/ExportPage.php", $entityName, "{$websiteId}", "{$currentPage}", "{$endPage}");
-            $pid = pcntl_fork();
-            if ($pid == -1) {
-                Mage::helper('analytics/log')->logError('Could not fork');
-                die('could not fork');
-            } else if ($pid) {
-                // in the parent
-                $pids[$pid] = $pid;
+            if (function_exists('pcntl_fork')) {
+                $pid = pcntl_fork();
+                if ($pid == -1) {
+                    Mage::helper('analytics/log')->logError('Could not fork');
+                    die('could not fork');
+                } else if ($pid) {
+                    // in the parent
+                    $pids[$pid] = $pid;
+
+                    $endPage = $endPage + $numberOfPages;
+                    $currentPage = $currentPage + $numberOfPages;
+
+                } else {
+                    // in the child
+                    pcntl_exec($phpbin, $args);
+                }
+
+                if (count($pids) >= $maxChildren) {
+                    $pid = pcntl_waitpid(-1, $status);
+                    unset($pids[$pid]);
+                }
+
+            } else {
+                $this->exportPage($websiteId, $currentPage, $endPage);
 
                 $endPage = $endPage + $numberOfPages;
                 $currentPage = $currentPage + $numberOfPages;
-            } else {
-                // in the child
-                pcntl_exec($phpbin, $args);
             }
-
         }
     }
 

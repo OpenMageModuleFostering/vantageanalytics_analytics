@@ -26,6 +26,7 @@ class VantageAnalytics_Analytics_Model_Api_Request
                 $errorDesc
             );
         }
+
         curl_setopt($channel, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($channel, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($channel, CURLOPT_RETURNTRANSFER, true);
@@ -47,17 +48,22 @@ class VantageAnalytics_Analytics_Model_Api_Request
     protected function raiseOnError($channel)
     {
         $status = curl_getinfo($channel, CURLINFO_HTTP_CODE);
+        $info = curl_getinfo($channel);
+        $url = $info['url'];
 
         if ($status >= 400 && $status < 500) {
+            Mage::helper('analytics/log')->logError("BadRequest: $url $status");
             throw new VantageAnalytics_Analytics_Model_Api_Exceptions_BadRequest;
         }
         if ($status >= 500) {
+            Mage::helper('analytics/log')->logError("ServerError: $url $status");
             throw new VantageAnalytics_Analytics_Model_Api_Exceptions_ServerError;
         }
 
         if (curl_errno($channel)) {
             $errorDesc = curl_error($channel);
             curl_close($channel);
+            Mage::helper('analytics/log')->logError("CurlError: $url $errorDesc");
             throw new VantageAnalytics_Analytics_Model_Api_Exceptions_CurlError(
                 $errorDesc
             );
@@ -72,13 +78,13 @@ class VantageAnalytics_Analytics_Model_Api_Request
         }
         $waitTimes = array(5, 30, 60, 5*60, 10*60, 30*60, 60*60, 4*60*60);
         $seconds = $waitTimes[$attempt];
-        Mage::helper('analytics/log')->logWarn("Waiting for {$seconds} seconds.");
+        Mage::helper('analytics/log')->logWarn("Will retry in {$seconds} seconds.");
         sleep($seconds);
     }
 
     protected function execCurl($method, $entity)
     {
-        $reponse = null;
+        $response = null;
         $attempts = 0;
         $success = false;
         while ($attempts < 5 && !$success) {
