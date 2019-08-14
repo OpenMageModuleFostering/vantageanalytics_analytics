@@ -44,7 +44,6 @@
 
     <events>
 
-
       <sales_order_save_after>
         <observers>
           <vantageanalytics_analytics_sales_order_save_after>
@@ -157,39 +156,6 @@
       </adminhtml>
     </routers>
   </admin>
-
-  <adminhtml>
-    <menu>
-      <analytics module="analytics">
-        <title>Vantage</title>
-        <sort_order>100</sort_order>
-        <action>adminhtml/analytics_analyticsbackend</action>
-      </analytics>
-    </menu>
-    <acl>
-      <resources>
-        <all>
-          <title>Vantage Analytics</title>
-        </all>
-        <admin>
-          <children>
-            <analytics translate="title" module="analytics">
-              <title>Vantage Analytics Index</title>
-              <sort_order>1000</sort_order>
-            </analytics>
-          </children>
-        </admin>
-      </resources>
-    </acl>
-
-    <layout>
-      <updates>
-        <analytics>
-          <file>analytics.xml</file>
-        </analytics>
-      </updates>
-    </layout>
-  </adminhtml>
 
   <crontab>
     <jobs>

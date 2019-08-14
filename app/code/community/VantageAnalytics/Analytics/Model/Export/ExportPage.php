@@ -15,6 +15,3 @@ $endPage = (int)$argv[4];
 $exportClass = "VantageAnalytics_Analytics_Model_Export_" . $entityName;
 $exporter = new $exportClass;
 $exporter->exportPage($websiteId, $startPage, $endPage);
-
-?>
-

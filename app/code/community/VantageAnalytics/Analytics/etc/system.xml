@@ -3,14 +3,14 @@
   <tabs>
     <vantageanalyticstab translate="label" module="analytics">
       <label>Vantage</label>
-      <sort_order>99999</sort_order>
+      <sort_order>0</sort_order>
     </vantageanalyticstab>
   </tabs>
   <sections>
     <vantageanalytics translate="label" module="analytics">
       <label>Configuration</label>
       <tab>vantageanalyticstab</tab>
-      <sort_order>1</sort_order>
+      <sort_order>0</sort_order>
       <show_in_default>1</show_in_default>
       <show_in_website>1</show_in_website>
       <show_in_store>1</show_in_store>
@@ -35,16 +35,26 @@
             </accountid>
             <accountpwd translate="label">
               <label>Vantage Secret</label>
-              <frontend_type>password</frontend_type>
+              <frontend_type>text</frontend_type>
               <backend_model>VantageAnalytics_Analytics_Model_Api_Secret</backend_model>
               <sort_order>1</sort_order>
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>1</show_in_store>
               <comment><![CDATA[
-                The API Secret in your Vantage account settings.
+                The API Secret for your Vantage account.
               ]]></comment>
             </accountpwd>
+            <verify translate="label">
+             <label>Verify Account</label>
+              <frontend_type>button</frontend_type>
+              <frontend_model>VantageAnalytics_Analytics_Block_Adminhtml_Verify</frontend_model>
+              <sort_order>20</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+              <comment>Verify your username and secret.</comment>
+            </verify>
           </fields>
         </accountoptions>
         <export translate="label">
@@ -66,16 +76,6 @@
                 Set to "No" to force a full historical data export.
               </comment>
             </done>
-            <reset translate="label">
-              <label>Reset Settings</label>
-              <frontend_type>button</frontend_type>
-              <frontend_model>VantageAnalytics_Analytics_Block_Adminhtml_Reset</frontend_model>
-              <sort_order>20</sort_order>
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>1</show_in_store>
-              <comment>Reset your account. Use with caution.</comment>
-            </reset>
           </fields>
         </export>
       </groups>
