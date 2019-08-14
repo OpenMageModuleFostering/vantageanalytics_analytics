@@ -15,6 +15,9 @@ class VantageAnalytics_Analytics_Helper_Tracking extends Mage_Core_Helper_Abstra
 
     public function setInitialCookie($request)
     {
+        if(!Mage::helper('analytics/account')->isVerified()){
+            return;
+        }
         if ($this->hasTrackingCookie()) {
             return;
         }

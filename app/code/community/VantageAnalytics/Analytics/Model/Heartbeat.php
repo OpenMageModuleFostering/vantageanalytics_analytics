@@ -9,8 +9,10 @@ class VantageAnalytics_Analytics_Model_Heartbeat
 
     public function send()
     {
-        $data = VantageAnalytics_Analytics_Model_Debug::factory()->toVantage();
+        if (Mage::helper('analytics/account')->isVerified()) {
+            $data = VantageAnalytics_Analytics_Model_Debug::factory()->toVantage();
 
-        $this->api->send('create', $data);
+            $this->api->send('create', $data);
+        }
     }
 }

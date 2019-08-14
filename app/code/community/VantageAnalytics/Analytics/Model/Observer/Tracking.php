@@ -10,6 +10,9 @@ class VantageAnalytics_Analytics_Model_Observer_Tracking
 
     public function controllerFrontInitBefore($observer)
     {
+        if(!Mage::helper('analytics/account')->isVerified()){
+            return;
+        }
         try {
             if ($this->isAdmin()) {
                 return;

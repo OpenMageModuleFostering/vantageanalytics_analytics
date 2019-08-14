@@ -14,13 +14,23 @@ class VantageAnalytics_Analytics_Model_Cron
 
     protected function jitter()
     {
-        $seconds = rand(0, 5*60);
+        $seconds = rand(0, 30);
         $this->log("Sleeping for {$seconds} seconds");
         sleep($seconds);
     }
 
+    protected function ensureLockDirectoryExists()
+    {
+        $dir = Mage::getBaseDir('var').DS.'locks';
+        if (!file_exists($dir)) {
+            mkdir($dir);
+        }
+    }
+
     protected function getCronLockfile()
     {
+        $this->ensureLockDirectoryExists();
+
         if (is_null($this->lockfile)) {
             $this->log('lock file opened');
             $this->lockfile = fopen(Mage::getBaseDir('var').DS.'locks'.DS.'vantage_cron_lock', 'w');
@@ -55,6 +65,9 @@ class VantageAnalytics_Analytics_Model_Cron
 
     public function run()
     {
+        if (!$this->accountIsVerified()) {
+            return;
+        }
         $this->jitter();
 
         if (!$this->acquireCronLock()) {

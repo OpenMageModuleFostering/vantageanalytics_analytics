@@ -12,6 +12,9 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
 
         protected function collectData($entity)
         {
+            if(!Mage::helper('analytics/account')->isVerified()){
+                return array();
+            }
             $transform = Mage::getModel("analytics/Transformer_{$this->transformer}", $entity);
             return $transform->toVantage();
         }
@@ -24,6 +27,9 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
 
         public function performSave($observer)
         {
+            if(!Mage::helper('analytics/account')->isVerified()){
+                return;
+            }
             try {
                 $entity = $this->getEntity($observer->getEvent());
                 $data = $this->collectData($entity);
@@ -35,6 +41,9 @@ abstract class VantageAnalytics_Analytics_Model_Observer_Base
 
         public function performDelete($observer)
         {
+            if(!Mage::helper('analytics/account')->isVerified()){
+                return;
+            }
             try {
                 $entity = $this->getEntity($observer->getEvent());
                 $data = $this->collectData($entity);

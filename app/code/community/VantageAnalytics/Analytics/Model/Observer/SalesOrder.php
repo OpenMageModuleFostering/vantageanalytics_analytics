@@ -13,6 +13,9 @@ class VantageAnalytics_Analytics_Model_Observer_SalesOrder extends VantageAnalyt
 
     protected function collectData($entity)
     {
+        if(!Mage::helper('analytics/account')->isVerified()){
+            return array();
+        }
         $data = parent::collectData($entity);
 
         // Collect cookies from real shoppers and not site admins.

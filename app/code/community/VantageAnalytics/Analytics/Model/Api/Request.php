@@ -65,12 +65,11 @@ class VantageAnalytics_Analytics_Model_Api_Request
 
     protected function wait($attempt)
     {
-        if ($attempt == 10) {
+        if ($attempt == 5) {
             Mage::helper('analytics/log')->logError("Tried $attempt times, giving up");
             throw new VantageAnalytics_Analytics_Model_Api_Exceptions_MaxRetries("Maximum retries exceeded");
         }
-        $waitTimes = array(30, 60, 5*60, 10*60, 30*60, 60*60,
-            2*60*60, 5*60*60, 12*60*60, 24*60*60);
+        $waitTimes = array(5, 30, 60, 5*60, 10*60, 30*60, 60*60);
         $seconds = $waitTimes[$attempt];
         Mage::helper('analytics/log')->logWarn("Waiting for {$seconds} seconds.");
         sleep($seconds);
@@ -80,7 +79,7 @@ class VantageAnalytics_Analytics_Model_Api_Request
     {
         $attempts = 0;
         $success = false;
-        while ($attempts < 10 && !$success) {
+        while ($attempts < 5 && !$success) {
             try {
                 $channel = $this->setupCurl($method, $entityData);
                 $response = curl_exec($channel);
