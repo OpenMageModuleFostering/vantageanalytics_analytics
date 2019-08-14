@@ -10,7 +10,18 @@ $orderId = Mage::getSingleton('checkout/session')->getLastOrderId();
 $order = Mage::getModel('sales/order')->load($orderId);
 $totalPrice = round($order->getGrandTotal(), 2);
 
+$orderItems = $order->getAllVisibleItems();
+$orderProductIds = array();
+
+foreach ($orderItems as $item) {
+    $orderProductIds[] = $item->getData('product_id');
+}
+
 ?>
 <script>
-window.$vantageCheckout = { totalPrice: <?php echo json_encode($totalPrice) ?> };
+window.$vantageCheckout = {
+        totalPrice: <?php echo json_encode($totalPrice) ?>,
+        orderId: <?php echo json_encode($orderId) ?>,
+        productIds: <?php echo json_encode($orderProductIds) ?>
+    };
 </script>
