@@ -40,11 +40,6 @@ abstract class VantageAnalytics_Analytics_Model_Transformer_Base
         return NULL;
     }
 
-    public function siteId()
-    {
-        return Mage::helper('analytics/account')->getSiteId();
-    }
-
     public abstract function entityType();
     public abstract function toVantage();
 }

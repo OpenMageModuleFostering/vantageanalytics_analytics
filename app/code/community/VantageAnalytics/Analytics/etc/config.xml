@@ -2,7 +2,7 @@
 <config>
   <modules>
     <VantageAnalytics_Analytics>
-      <version>1.2.4</version>
+      <version>1.2.2</version>
     </VantageAnalytics_Analytics>
   </modules>
 
@@ -169,14 +169,6 @@
 
   <crontab>
     <jobs>
-      <analytics>
-        <schedule>
-          <cron_expr>*/5 * * * *</cron_expr>
-        </schedule>
-        <run>
-          <model>analytics/cron::run</model>
-        </run>
-      </analytics>
       <analytics_heartbeat>
         <schedule>
           <cron_expr>5 * * * *</cron_expr>

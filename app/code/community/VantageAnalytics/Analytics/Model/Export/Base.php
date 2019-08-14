@@ -6,75 +6,6 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
 
     abstract protected function createCollection($website, $pageNumber);
 
-    protected function tryToFindPHP($phpv)
-    {
-        if (file_exists("/usr/local/php{$phpv}/bin/php")) {
-            return "/usr/local/php{$phpv}/bin/php";
-        }
-
-        if (file_exists("/usr/local/php{$phpv}/bin/php{$phpv}")) {
-            return "/usr/local/php{$phpv}/bin/php{$phpv}";
-        }
-
-        if (file_exists("/usr/bin/php${phpv}")) {
-            return "/usr/bin/php{$phpv}";
-        }
-
-        if (file_exists("/usr/local/bin/php{$phpv}")) {
-            return "/usr/local/bin/php{$phpv}";
-        }
-
-        if (function_exists("exec")) {
-            $exe = exec("which php{$phpv}");
-            if ($exe) {
-                return $exe;
-            }
-        }
-    }
-
-    protected function getPathToPHP()
-    {
-        if (defined("PHP_BINARY") && file_exists(constant("PHP_BINARY"))) {
-            return constant("PHP_BINARY");
-        }
-        if (defined("PHP_PREFIX") && file_exists(constant("PHP_PREFIX") . "/bin/php")) {
-            return constant("PHP_PREFIX") . "/bin/php";
-        }
-        if (defined("PHP_BIN_DIR") && file_exists(constant("PHP_BIN_DIR") . "/php")) {
-            return constant("PHP_BIN_DIR") . "/php";
-        }
-
-        // mage> echo " " . getmypid() . " " . posix_getpid() . " " . exec('echo $PPID');
-        //  31728 31728 31728
-        if (function_exists('posix_getpid')) {
-            $pid = posix_getpid();
-        } else if (function_exists('getmypid')) {
-            $pid = getmypid();
-        } else {
-            $pid = exec('echo $PPID');
-        }
-
-        if (function_exists('exec')) {
-            $exe = exec("readlink -f /proc/$pid/exe");
-            if ($exe && file_exists($exe)) {
-                return $exe;
-            }
-        }
-
-        $exe = $this->tryToFindPHP("56");
-        if ($exe) {
-            return $exe;
-        }
-        $exe = $this->tryToFindPHP("5");
-        if ($exe) {
-            return $exe;
-        }
-        $exe = $this->tryToFindPHP("");
-        if ($exe) {
-            return $exe;
-        }
-    }
-
     public function __construct($pageSize = null, $api=null, $transformer='')
     {
         $this->transformer = $transformer;
@@ -124,60 +55,6 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
             ),
             true
         );
-    }
-
-    protected function exportWebsite($website)
-    {
-        $numberOfPages = 5;
-        $websiteId = $website->getWebsiteId();
-        $collection = $this->createCollection($website, null);
-        if (is_null($collection)) {
-            return;
-        }
-        $totalPages = $collection->getLastPageNumber();
-        $totalItems = $collection->getSize();
-        $entityName = $this->getEntityName();
-        $currentPage = 0;
-        $endPage = $currentPage + $numberOfPages;
-        $where = Mage::getBaseDir('code') . '/community/VantageAnalytics/Analytics/Model/Export';
-        $phpbin = $this->getPathToPHP();
-
-        $pids = array();
-        $maxChildren = 1;
-
-        while ($currentPage <= $totalPages) {
-            $this->_exportMetaData(
-                $website->getWebsiteId(),
-                strtolower($entityName),
-                $currentPage,
-                $totalPages,
-                $this->pageSize,
-                $totalItems
-            );
-
-            if ($endPage >= $totalPages) {
-                $endPage = $totalPages + 1; // The page ranges are inclusive-exclusive so pick up the last page
-            }
-
-            $retVal = null;
-            $output = array();
-            $cmd ="${phpbin} {$where}/ExportPage.php {$entityName} {$websiteId} {$currentPage} {$endPage}";
-            exec($cmd, $output, $retVal);
-            if ($retVal !== 0) {
-                Mage::helper('analytics/log')->logError("Failure running (exit ${retVal}): {$cmd}");
-            }
-
-            $endPage = $endPage + $numberOfPages;
-            $currentPage = $currentPage + $numberOfPages;
-        }
-    }
-
-    public function run()
-    {
-        $websites = Mage::app()->getWebsites();
-        foreach ($websites as $website) {
-           $this->exportWebsite($website);
-        }
     }
 
     public function exportMetaData($websiteId)
