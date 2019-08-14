@@ -16,8 +16,13 @@ class VantageAnalytics_Analytics_Model_Export_Runner
             return;
         }
 
+        if (!gc_enabled()) {
+            Mage::helper('analytics/log')->logError("GC was not enabled. I am enabling it manually.");
+            gc_enable();
+        }
+
         $this->notifyExportStart();
-        $this->setExportDone(); // Hope for the best
+        $this->setExportDone(1); // Hope for the best
 
         $entities = array('Store', 'Customer', 'Product', 'Order');
         Mage::helper('analytics/log')->logInfo("Start exporting all entities");
@@ -41,7 +46,7 @@ class VantageAnalytics_Analytics_Model_Export_Runner
         return Mage::helper('analytics/account')->isExportDone();
     }
 
-    public function setExportDone($done=1)
+    public function setExportDone($done)
     {
         return Mage::helper('analytics/account')->setExportDone($done);
     }

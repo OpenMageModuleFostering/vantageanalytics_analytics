@@ -3,6 +3,7 @@
 abstract class VantageAnalytics_Analytics_Model_Export_Base
 {
     const PAGE_SIZE = 500;
+    const GC_COLLECT_EVERY_N_PAGES = 10;
 
     abstract protected function createCollection($website);
 
@@ -39,9 +40,17 @@ abstract class VantageAnalytics_Analytics_Model_Export_Base
         while ($currentPage <= $totalPages) {
             foreach ($collection as $entity) {
                 $this->exportEntity($entity);
+                try {
+                    $entity->clearInstance();
+                } catch (Exception $e) {
+                    /* not a problem */
+                }
             }
             $currentPage++;
             $collection->clear();
+            if ($currentPage % self::GC_COLLECT_EVERY_N_PAGES === 0) {
+                gc_collect_cycles();
+            }
         }
     }
 
