@@ -11,12 +11,12 @@ class VantageAnalytics_Analytics_Model_Observer_SalesQuote extends VantageAnalyt
         return $event->getQuote();
     }
 
-    protected function collectData($entity)
+    protected function collectData($entity, $store=null)
     {
         if(!Mage::helper('analytics/account')->isVerified()){
             return array();
         }
-        $data = parent::collectData($entity);
+        $data = parent::collectData($entity, $store);
         if (!array_key_exists('total_quantity', $data) || $data['total_quantity'] == 0) {
             return array();
         }

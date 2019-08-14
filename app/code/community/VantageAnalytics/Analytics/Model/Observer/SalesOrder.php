@@ -11,12 +11,12 @@ class VantageAnalytics_Analytics_Model_Observer_SalesOrder extends VantageAnalyt
         return $event->getOrder();
     }
 
-    protected function collectData($entity)
+    protected function collectData($entity, $store=null)
     {
         if(!Mage::helper('analytics/account')->isVerified()){
             return array();
         }
-        $data = parent::collectData($entity);
+        $data = parent::collectData($entity, $store);
 
         // Collect cookies from real shoppers and not site admins.
         if (!$this->isAdmin()) {

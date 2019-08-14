@@ -2,7 +2,7 @@
 <config>
   <modules>
     <VantageAnalytics_Analytics>
-      <version>1.1.1</version>
+      <version>1.1.2</version>
     </VantageAnalytics_Analytics>
   </modules>
   <phpunit>
