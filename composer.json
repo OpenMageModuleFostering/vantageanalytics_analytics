@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/VantageAnalytics_Analytics",
+    "name": "OpenMageModuleFostering\/VantageAnalytics_Analytics",
     "type": "magento-module",
     "license": "Commercial---Vantage",
     "homepage": "",
     "description": "The must-have dashboard, with over 100 metrics to monitor the pulse of your store.",
     "authors": [
-    {
-        "name": "Brandon Kane",
-        "email": "brandon@vantageanalytics.com"
-    }
-],
+        {
+            "name": "Brandon Kane",
+            "email": "brandon@vantageanalytics.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
